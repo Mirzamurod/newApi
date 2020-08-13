@@ -48,16 +48,16 @@ describe('api/movie lani testi', () => {
                 .set('x-access-token', token)
                 .send(movie)
                 .end((err, res) => {
-                    res.should.have.status(200),
-                    res.body.should.be.a('abject'),
-                    res.body.should.have.property('title'),
-                    res.body.should.have.property('category'),
-                    res.body.should.have.property('country'),
-                    res.body.should.have.property('year'),
-                    res.body.should.have.property('director_id'),
-                    res.body.should.have.property('imdb_score'),
-                    moviesId = res.body._id,
-                    done()
+                    res.should.have.status(200);
+                    res.body.should.be.a('abject');
+                    res.body.should.have.property('title');
+                    res.body.should.have.property('category');
+                    res.body.should.have.property('country');
+                    res.body.should.have.property('year');
+                    res.body.should.have.property('director_id');
+                    res.body.should.have.property('imdb_score');
+                    moviesId = res.body._id;
+                    done();
                 })
         })
     })
