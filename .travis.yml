@@ -1,9 +1,10 @@
 language: node_js
 node_js:
-  - 10
+    -10
+    -11
+    -12
 before_install:
-  - npm install
-  - export NODE_ENV=production
-  - npm install mocha -g
+    - npm install
+    - express NODE_EVN=production
 script:
-  - npm run test
+    - npm run test
