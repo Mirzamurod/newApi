@@ -6,6 +6,7 @@ const jwt = require('jsonwebtoken');
 const User = require('./../model/User');
 
 router.get('/', (req, res, next) => {
+    res.render('particles');
     res.render('index', { title: 'We have a test in our app 1111111111' });
 });
 
