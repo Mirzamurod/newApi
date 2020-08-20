@@ -1,3 +1,3 @@
 module.exports = {
-    api_secret_key: 'maxfiy kalit'
+    api_secret_key: 'maxfiy soz'
 };

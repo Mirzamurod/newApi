@@ -1,17 +1,93 @@
+const mongoose = require('mongoose');
 const express = require('express');
 const router = express.Router();
 
-const Director = require('./../model/Director');
+// models
+const Director = require('../model/Director');
 
-// list search best10movie
-router.get('/nma', (req, res, next) => {
+router.post('/', (req, res, next) => {
+    const director = new Director(req.body);
+    const promise = director.save();
+
+    promise
+        .then(data => {
+            res.json(data);
+        })
+        .catch(err => {
+            res.json(err);
+        });
+});
+/*router.get('/', (req, res, next) => {
+    const promise = Director.find({ });
+    promise.then((data) => {
+        res.json(data);
+    }).catch((err) => {
+        res.json(err);
+    });
+
+});*/
+
+router.get('/:directory_id/best10movie', (req, res, next) => {
+    const promise = Director.aggregate([
+        {
+            $match: {
+                _id: mongoose.Types.ObjectId(req.params.directory_id)
+            }
+        },
+        {
+            $lookup: {
+                from: 'movies',
+                localField: '_id',
+                foreignField: 'directory_id',
+                as: 'movies'
+            }
+        },
+        {
+            $unwind: '$movies'
+        },
+        {
+            $sort: {
+                'movies.imdb_score': -1
+            }
+        },
+        {
+            $limit: 10
+        },
+        {
+            $group: {
+                _id: {
+                    _id: '$_id'
+                },
+                movies: {
+                    $push: '$movies'
+                }
+            }
+        },
+        {
+            $project: {
+                _id: false,
+                movies: '$movies'
+            }
+        }
+    ]);
+
+    promise
+        .then(data => {
+            res.json(data);
+        })
+        .catch(err => {
+            res.json(err);
+        });
+});
+
+router.get('/', (req, res, next) => {
     const promise = Director.aggregate([
         {
             $lookup: {
                 from: 'movies',
                 localField: '_id',
-                foreignField: 'director_id',
-                as: 'filmlar'
+                foreignField: 'directory_id',
+                as: 'movies'
             }
         },
         {
@@ -35,8 +111,8 @@ router.get('/nma', (req, res, next) => {
         {
             $project: {
                 _id: '$_id._id',
-                name: '_id.name',
-                surname: '_id.surname',
+                name: '$_id.name',
+                surname: '$_id.surname',
                 movies: '$movies'
             }
         }
@@ -51,47 +127,87 @@ router.get('/nma', (req, res, next) => {
         });
 });
 
-// list post
-router.post('/', (req, res, next) => {
-    const director = new Director(req.body);
-
-    const promise = director
-        .save()
-        .then(data => {
-            res.json(data);
-        })
-        .catch(err => {
-            res.json(err);
-        });
-});
-
-// list search id
-router.get('/:director_id', (req, res, next) => {
-    const promise = Director.findById(req.params.director_id);
+router.put('/:directory_id', (req, res, next) => {
+    const promise = Director.findByIdAndUpdate(
+        req.params.directory_id,
+        req.body,
+        {
+            new: true
+        }
+    );
 
     promise
-        .then(data => {
-            res.json(data);
+        .then(director => {
+            if (!director) {
+                next({ message: 'Director Topilmadi!!!', code: 123 });
+            }
+            res.json(director);
         })
         .catch(err => {
             res.json(err);
         });
 });
 
-// list search id and update
-router.put('/:director_id', (req, res, next) => {
-    const promise = Director.findByIdAndUpdate(req.params.director_id, req.body)
-        .then(data => {
-            res.json(data);
+router.delete('/:directory_id', (req, res, next) => {
+    const promise = Director.findByIdAndRemove(req.params.directory_id);
+
+    promise
+        .then(director => {
+            if (!director) {
+                next({ message: 'Director Topilmadi!!!', code: 123 });
+            }
+            res.json(director);
         })
         .catch(err => {
             res.json(err);
         });
 });
 
-// list search id and delete
-router.delete('/:director_id', (req, res, next) => {
-    const promise = Director.findByIdAndRemove(req.params.director_id, req.body)
+router.get('/:directory_id', (req, res, next) => {
+    const promise = Director.aggregate([
+        {
+            $match: {
+                _id: mongoose.Types.ObjectId(req.params.directory_id)
+            }
+        },
+
+        {
+            $lookup: {
+                from: 'movies',
+                localField: '_id',
+                foreignField: 'directory_id',
+                as: 'movies'
+            }
+        },
+        {
+            $unwind: {
+                path: '$movies'
+            }
+        },
+        {
+            $group: {
+                _id: {
+                    _id: '$_id',
+                    name: '$name',
+                    surname: '$surname',
+                    bio: '$bio'
+                },
+                movies: {
+                    $push: '$movies'
+                }
+            }
+        },
+        {
+            $project: {
+                _id: '$_id._id',
+                name: '$_id.name',
+                surname: '$_id.surname',
+                movies: '$movies'
+            }
+        }
+    ]);
+
+    promise
         .then(data => {
             res.json(data);
         })

@@ -35,7 +35,7 @@ describe('/api/movies tests', () => {
         it('should POST a movie', done => {
             const movie = {
                 title: 'For Test',
-                director_id: '5ec3e85c140bbd2d56cfeb0c',
+                directory_id: '5ec3e85c140bbd2d56cfeb0c',
                 category: 'Comedy',
                 country: 'Thailand',
                 year: 1950,
@@ -50,7 +50,7 @@ describe('/api/movies tests', () => {
                     res.should.have.status(200);
                     res.body.should.be.a('object');
                     res.body.should.have.property('title');
-                    res.body.should.have.property('director_id');
+                    res.body.should.have.property('directory_id');
                     res.body.should.have.property('category');
                     res.body.should.have.property('country');
                     res.body.should.have.property('year');
@@ -70,7 +70,7 @@ describe('/api/movies tests', () => {
                     res.should.have.status(200);
                     res.body.should.be.a('object');
                     res.body.should.have.property('title');
-                    res.body.should.have.property('director_id');
+                    res.body.should.have.property('directory_id');
                     res.body.should.have.property('category');
                     res.body.should.have.property('country');
                     res.body.should.have.property('year');
@@ -84,7 +84,7 @@ describe('/api/movies tests', () => {
     describe('/PUT/movie_id movie', () => {
         it('should PUT a movie', done => {
             const movie = {
-                title: 'Hello Mello',
+                title: 'TESTTT',
                 directory_id: '5ec3e85c140bbd2d56cfeb0b',
                 category: 'War',
                 country: 'USA',
@@ -97,14 +97,13 @@ describe('/api/movies tests', () => {
                 .set('x-access-token', token)
                 .end((err, res) => {
                     res.should.have.status(200);
-                    res.body.should.be.a('object')
+                    res.body.should.be.a('object');
                     res.body.should.have.property('title').eql(movie.title);
-                    res.body.should.have.property('director_id').eql(movie.director_id);
+                    res.body.should.have.property('directory_id').eql(movie.directory_id);
                     res.body.should.have.property('category').eql(movie.category);
                     res.body.should.have.property('country').eql(movie.country);
                     res.body.should.have.property('year').eql(movie.year);
                     res.body.should.have.property('imdb_score').eql(movie.imdb_score);
-
                     done();
                 });
         });

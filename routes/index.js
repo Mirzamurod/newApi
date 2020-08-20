@@ -1,20 +1,20 @@
 const express = require('express');
-const router = express.Router();
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-// model
+const router = express.Router();
+
+// models
 const User = require('../model/User');
 
 /* GET home page. */
-router.get('/', (req, res, next) => {
-    res.render('index', { title: 'We have a test in our app 1111111111' });
+router.get('/', function (req, res, next) {
+    res.render('index', { title: 'Express' });
 });
 
-/* POST Method. */
 router.post('/register', (req, res, next) => {
-    const { username, password } = req.body;
+    const { password, username } = req.body;
 
-    bcrypt.hash(password, 10, (err, hash) => {
+    bcrypt.hash(password, 10).then(hash => {
         const user = new User({
             username,
             password: hash
@@ -32,7 +32,7 @@ router.post('/register', (req, res, next) => {
 });
 
 router.post('/authenticate', (req, res, next) => {
-    const { username, password } = req.body;
+    const { password, username } = req.body;
 
     User.findOne(
         {
@@ -44,15 +44,14 @@ router.post('/authenticate', (req, res, next) => {
             if (!user) {
                 res.json({
                     status: false,
-                    message: 'Kirish Muvaffaqiyatsiz'
+                    message: 'Authentication failed, user not found'
                 });
             } else {
-                bcrypt.compare(password, user.password).then(pas => {
-                    if (!pas) {
+                bcrypt.compare(password, user.password).then(result => {
+                    if (!result) {
                         res.json({
                             status: false,
-                            message:
-                                'Foydalanuvchi malumotlari notogri, Notogri parol'
+                            message: 'Authentication failed, user not found'
                         });
                     } else {
                         const payload = {
@@ -62,7 +61,7 @@ router.post('/authenticate', (req, res, next) => {
                             payload,
                             req.app.get('api_secret_key'),
                             {
-                                expiresIn: 720 // 12 soat
+                                expiresIn: 720 // 12soat
                             }
                         );
 

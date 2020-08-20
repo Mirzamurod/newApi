@@ -5,8 +5,8 @@ const server = require('../../app');
 
 chai.use(chaiHttp);
 
-describe('Bosh Sahifa Testi', () => {
-    it('(GET /) bu bosh sahifani korsatishi kerak', done => {
+describe('Node Server', () => {
+    it('(GET /) bosh sahifaga qaytadi', done => {
         chai.request(server)
             .get('/')
             .end((err, res) => {

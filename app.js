@@ -3,22 +3,19 @@ const express = require('express');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
-
 const indexRouter = require('./routes/index');
-const usersRouter = require('./routes/users');
-const directorsRouter = require('./routes/director');
+const moviesRouter = require('./routes/movies');
+const directorsRouter = require('./routes/directors');
+const middleWareRouter = require('./middleware/verifytoken');
 
 const app = express();
 
-// mongoga ulanish jarayoni
-
+// mongoDB connection route nad start
 const db = require('./helper/db')();
 
-//CONFIG Secret Key
+// config
 const config = require('./config');
 app.set('api_secret_key', config.api_secret_key);
-// Middleware
-const tokenverify = require('./middleware/token-verify');
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -31,24 +28,24 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
-app.use('/api', tokenverify);
-app.use('/api/movies', usersRouter);
-app.use('/api/directory', directorsRouter);
+app.use('/api', middleWareRouter);
+app.use('/api/movies', moviesRouter);
+app.use('/api/directors', directorsRouter);
 
 // catch 404 and forward to error handler
-app.use((req, res, next) => {
+app.use(function (req, res, next) {
     next(createError(404));
 });
 
 // error handler
-app.use((err, req, res, next) => {
+app.use(function (err, req, res, next) {
     // set locals, only providing error in development
     res.locals.message = err.message;
     res.locals.error = req.app.get('env') === 'development' ? err : {};
 
     // render the error page
     res.status(err.status || 500);
-    // res.render('error');
+    //res.render('error');
     res.json({ error: { message: err.message, code: err.code } });
 });
 

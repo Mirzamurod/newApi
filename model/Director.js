@@ -2,16 +2,16 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const DirectorSchema = new Schema({
-    director_id: Schema.Types.ObjectId,
     name: {
         type: String,
-        required: true
+        maxlength: 30,
+        minlength: 4
     },
-    surname: {
-        type: String
-    },
-    bio: {
-        type: String
+    surname: String,
+    bio: String,
+    createdAt: {
+        type: Date,
+        default: Date.now
     }
 });
 
