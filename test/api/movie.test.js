@@ -19,7 +19,7 @@ describe('/api/movies tests', () => {
     });
 
     describe('/GET movies', () => {
-        it('should GET all the movies', done => {
+        it('GET barcha movielarni olish kerak', done => {
             chai.request(server)
                 .get('/api/movies')
                 .set('x-access-token', token)
@@ -32,7 +32,7 @@ describe('/api/movies tests', () => {
     });
 
     describe('/POST movie', () => {
-        it('should POST a movie', done => {
+        it('POST movie qoshish kerak', done => {
             const movie = {
                 title: 'For Test',
                 directory_id: '5ec3e85c140bbd2d56cfeb0c',
@@ -62,7 +62,7 @@ describe('/api/movies tests', () => {
     });
 
     describe('/GET/movie_id movie', () => {
-        it('should GET a movie by given _id', done => {
+        it('GET movieni _id orqali korsatish kerak', done => {
             chai.request(server)
                 .get('/api/movies/' + movieId)
                 .set('x-access-token', token)
@@ -82,7 +82,7 @@ describe('/api/movies tests', () => {
     });
 
     describe('/PUT/movie_id movie', () => {
-        it('should PUT a movie', done => {
+        it('PUT movieni _id orqali ozgartirish kerak', done => {
             const movie = {
                 title: 'TESTTT',
                 directory_id: '5ec3e85c140bbd2d56cfeb0b',
@@ -110,7 +110,7 @@ describe('/api/movies tests', () => {
     });
 
     describe('/DELETE/movie_id movie', () => {
-        it('should DELETE movie by id', done => {
+        it('DELETE movieni _id orqali ochirish kerak', done => {
             chai.request(server)
                 .delete('/api/movies/' + movieId)
                 .set('x-access-token', token)
